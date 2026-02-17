@@ -70,10 +70,17 @@ public:
     Result OpenDoc(const std::string& file_path);
 
     // -------------------------------------------------------
-    // Metadata helpers (best-effort — returns 0 if unavailable)
+    // Metadata helpers (best-effort — returns 0/empty if unavailable)
     // -------------------------------------------------------
-    Result GetMassProperties(double& mass_kg, double& volume_m3);
+    // mass_kg, volume_m3, surface_area_m2 are all from the same COM object.
+    Result GetMassProperties(double& mass_kg, double& volume_m3, double& surface_area_m2);
     Result GetFeatureCount(int& count);
+    // Material name (parts only; returns empty string for assemblies/drawings).
+    Result GetMaterial(std::string& material);
+    // Bounding box extents in mm (model units are meters, converted here).
+    Result GetBoundingBox(double& x_mm, double& y_mm, double& z_mm);
+    // Number of configurations in the document.
+    Result GetConfigCount(int& count);
 
     // Save a 256x256 BMP thumbnail of the active document.
     // dest_path should end in ".bmp"

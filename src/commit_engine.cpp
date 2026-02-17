@@ -78,14 +78,25 @@ Result CommitEngine::Commit(const std::string& message, bool capture_thumbnail) 
     c.sw_meta.doc_path = doc_info.path;
     c.sw_meta.doc_type = doc_info.type;
 
-    double mass = 0, volume = 0;
-    sw_.GetMassProperties(mass, volume);
-    c.sw_meta.mass   = mass;
-    c.sw_meta.volume = volume;
+    double mass = 0, volume = 0, surface_area = 0;
+    sw_.GetMassProperties(mass, volume, surface_area);
+    c.sw_meta.mass         = mass;
+    c.sw_meta.volume       = volume;
+    c.sw_meta.surface_area = surface_area;
 
     int feat_count = 0;
     sw_.GetFeatureCount(feat_count);
     c.sw_meta.feature_count = feat_count;
+
+    sw_.GetMaterial(c.sw_meta.material);
+    sw_.GetBoundingBox(c.sw_meta.bbox_x, c.sw_meta.bbox_y, c.sw_meta.bbox_z);
+    sw_.GetConfigCount(c.sw_meta.config_count);
+
+    // Blob file size (filesystem — no COM needed)
+    std::error_code size_ec;
+    c.sw_meta.blob_size_bytes =
+        static_cast<int64_t>(fs::file_size(blob_dest, size_ec));
+    if (size_ec) c.sw_meta.blob_size_bytes = 0;
 
     // 7. Persist commit record and update HEAD
     r = repo_.SaveCommit(c);

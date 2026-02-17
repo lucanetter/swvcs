@@ -285,14 +285,10 @@ Result SwConnection::OpenDoc(const std::string& file_path) {
 // -------------------------------------------------------
 // GetMassProperties  (best-effort)
 // -------------------------------------------------------
-Result SwConnection::GetMassProperties(double& mass_kg, double& volume_m3) {
-    mass_kg = volume_m3 = 0.0;
+Result SwConnection::GetMassProperties(double& mass_kg, double& volume_m3, double& surface_area_m2) {
+    mass_kg = volume_m3 = surface_area_m2 = 0.0;
     if (!connected_ || !sw_doc_)
         return Result::failure("No active document");
-
-    // MassProperties is accessed via IModelDocExtension
-    // This is a simplified approach using Invoke chains
-    // Full implementation would use IMassProperty interface
 
     VARIANT vExt; VariantInit(&vExt);
     HRESULT hr = Invoke(sw_doc_, L"Extension", DISPATCH_PROPERTYGET, &vExt);
@@ -301,26 +297,97 @@ Result SwConnection::GetMassProperties(double& mass_kg, double& volume_m3) {
 
     IDispatch* ext = vExt.pdispVal;
 
-    VARIANT vMass; VariantInit(&vMass);
-    // CreateMassProperty returns an IMassProperty object
-    // For brevity, we attempt to read via the extension directly
     VARIANT vMassProp; VariantInit(&vMassProp);
     hr = Invoke(ext, L"CreateMassProperty", DISPATCH_METHOD, &vMassProp);
     if (SUCCEEDED(hr) && vMassProp.vt == VT_DISPATCH && vMassProp.pdispVal) {
         IDispatch* mp = vMassProp.pdispVal;
+
         VARIANT vm; VariantInit(&vm);
         if (SUCCEEDED(Invoke(mp, L"Mass", DISPATCH_PROPERTYGET, &vm)))
             mass_kg = vm.dblVal;
         VariantClear(&vm);
+
         VARIANT vv; VariantInit(&vv);
         if (SUCCEEDED(Invoke(mp, L"Volume", DISPATCH_PROPERTYGET, &vv)))
             volume_m3 = vv.dblVal;
         VariantClear(&vv);
+
+        VARIANT vs; VariantInit(&vs);
+        if (SUCCEEDED(Invoke(mp, L"SurfaceArea", DISPATCH_PROPERTYGET, &vs)))
+            surface_area_m2 = vs.dblVal;
+        VariantClear(&vs);
+
         mp->Release();
     }
 
     VariantClear(&vMassProp);
     ext->Release();
+    return Result::success();
+}
+
+// -------------------------------------------------------
+// GetMaterial  (parts only — empty string for assemblies)
+// -------------------------------------------------------
+Result SwConnection::GetMaterial(std::string& material) {
+    material.clear();
+    if (!connected_ || !sw_doc_) return Result::failure("No active document");
+
+    // GetMaterialPropertyName(sConfigName) — IPartDoc method, fails on assemblies
+    VARIANT vConfig; VariantInit(&vConfig);
+    vConfig.vt      = VT_BSTR;
+    vConfig.bstrVal = SysAllocString(L"");   // empty = active configuration
+
+    VARIANT vMat; VariantInit(&vMat);
+    HRESULT hr = Invoke(sw_doc_, L"GetMaterialPropertyName", DISPATCH_METHOD, &vMat, 1, vConfig);
+    SysFreeString(vConfig.bstrVal);
+
+    if (SUCCEEDED(hr) && vMat.vt == VT_BSTR)
+        material = FromBSTR(vMat.bstrVal);
+
+    VariantClear(&vMat);
+    return Result::success();
+}
+
+// -------------------------------------------------------
+// GetBoundingBox  (all document types)
+// -------------------------------------------------------
+Result SwConnection::GetBoundingBox(double& x_mm, double& y_mm, double& z_mm) {
+    x_mm = y_mm = z_mm = 0.0;
+    if (!connected_ || !sw_doc_) return Result::failure("No active document");
+
+    // GetBox(Top) returns SAFEARRAY of 6 doubles: [minX,minY,minZ,maxX,maxY,maxZ] in metres
+    VARIANT vTop; VariantInit(&vTop);
+    vTop.vt      = VT_BOOL;
+    vTop.boolVal = VARIANT_FALSE;
+
+    VARIANT vBox; VariantInit(&vBox);
+    HRESULT hr = Invoke(sw_doc_, L"GetBox", DISPATCH_METHOD, &vBox, 1, vTop);
+    if (SUCCEEDED(hr) && (vBox.vt & VT_ARRAY)) {
+        SAFEARRAY* sa   = (vBox.vt & VT_BYREF) ? *vBox.pparray : vBox.parray;
+        double*    data = nullptr;
+        if (SUCCEEDED(SafeArrayAccessData(sa, reinterpret_cast<void**>(&data)))) {
+            x_mm = (data[3] - data[0]) * 1000.0;
+            y_mm = (data[4] - data[1]) * 1000.0;
+            z_mm = (data[5] - data[2]) * 1000.0;
+            SafeArrayUnaccessData(sa);
+        }
+    }
+    VariantClear(&vBox);
+    return Result::success();
+}
+
+// -------------------------------------------------------
+// GetConfigCount
+// -------------------------------------------------------
+Result SwConnection::GetConfigCount(int& count) {
+    count = 0;
+    if (!connected_ || !sw_doc_) return Result::failure("No active document");
+
+    VARIANT vCount; VariantInit(&vCount);
+    if (SUCCEEDED(Invoke(sw_doc_, L"GetConfigurationCount", DISPATCH_METHOD, &vCount))
+        && vCount.vt == VT_I4)
+        count = vCount.lVal;
+    VariantClear(&vCount);
     return Result::success();
 }
 

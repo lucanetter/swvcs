@@ -56,7 +56,7 @@ void Repository::Init()
 
 void Repository::InitSchema()
 {
-    // commits table — one row per snapshot
+    // commits table — one row per snapshot (original columns)
     db_->exec(R"(
         CREATE TABLE IF NOT EXISTS commits (
             hash          TEXT PRIMARY KEY,
@@ -72,6 +72,21 @@ void Repository::InitSchema()
         );
     )");
 
+    // Migration: add new columns if they don't exist yet.
+    // SQLite ALTER TABLE does not support IF NOT EXISTS, so we
+    // silently ignore the "duplicate column name" error.
+    auto tryAlter = [&](const char* sql) {
+        try { db_->exec(sql); }
+        catch (const SQLite::Exception&) { /* column already exists */ }
+    };
+    tryAlter("ALTER TABLE commits ADD COLUMN surface_area    REAL    NOT NULL DEFAULT 0.0");
+    tryAlter("ALTER TABLE commits ADD COLUMN material        TEXT    NOT NULL DEFAULT ''");
+    tryAlter("ALTER TABLE commits ADD COLUMN bbox_x          REAL    NOT NULL DEFAULT 0.0");
+    tryAlter("ALTER TABLE commits ADD COLUMN bbox_y          REAL    NOT NULL DEFAULT 0.0");
+    tryAlter("ALTER TABLE commits ADD COLUMN bbox_z          REAL    NOT NULL DEFAULT 0.0");
+    tryAlter("ALTER TABLE commits ADD COLUMN config_count    INTEGER NOT NULL DEFAULT 0");
+    tryAlter("ALTER TABLE commits ADD COLUMN blob_size_bytes INTEGER NOT NULL DEFAULT 0");
+
     // config table — key/value store for HEAD, version, etc.
     db_->exec(R"(
         CREATE TABLE IF NOT EXISTS config (
@@ -81,7 +96,7 @@ void Repository::InitSchema()
     )");
 
     // Seed version on first creation (ignored if already exists)
-    db_->exec("INSERT OR IGNORE INTO config (key, value) VALUES ('version', '2');");
+    db_->exec("INSERT OR IGNORE INTO config (key, value) VALUES ('version', '3');");
     db_->exec("INSERT OR IGNORE INTO config (key, value) VALUES ('HEAD', '');");
 }
 
@@ -143,8 +158,10 @@ Result Repository::SaveCommit(const Commit& c)
         SQLite::Statement q(*db_, R"(
             INSERT OR REPLACE INTO commits
                 (hash, message, timestamp, author, parent_hash,
-                 doc_path, doc_type, mass, volume, feature_count)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 doc_path, doc_type, mass, volume, feature_count,
+                 surface_area, material, bbox_x, bbox_y, bbox_z,
+                 config_count, blob_size_bytes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         )");
         q.bind(1,  c.hash);
         q.bind(2,  c.message);
@@ -156,6 +173,13 @@ Result Repository::SaveCommit(const Commit& c)
         q.bind(8,  c.sw_meta.mass);
         q.bind(9,  c.sw_meta.volume);
         q.bind(10, c.sw_meta.feature_count);
+        q.bind(11, c.sw_meta.surface_area);
+        q.bind(12, c.sw_meta.material);
+        q.bind(13, c.sw_meta.bbox_x);
+        q.bind(14, c.sw_meta.bbox_y);
+        q.bind(15, c.sw_meta.bbox_z);
+        q.bind(16, c.sw_meta.config_count);
+        q.bind(17, static_cast<long long>(c.sw_meta.blob_size_bytes));
         q.exec();
         return Result::success();
     }
@@ -180,7 +204,14 @@ static Commit RowToCommit(SQLite::Statement& q)
     c.sw_meta.doc_type  = q.getColumn(6).getString();
     c.sw_meta.mass      = q.getColumn(7).getDouble();
     c.sw_meta.volume    = q.getColumn(8).getDouble();
-    c.sw_meta.feature_count = q.getColumn(9).getInt();
+    c.sw_meta.feature_count  = q.getColumn(9).getInt();
+    c.sw_meta.surface_area   = q.getColumn(10).getDouble();
+    c.sw_meta.material       = q.getColumn(11).getString();
+    c.sw_meta.bbox_x         = q.getColumn(12).getDouble();
+    c.sw_meta.bbox_y         = q.getColumn(13).getDouble();
+    c.sw_meta.bbox_z         = q.getColumn(14).getDouble();
+    c.sw_meta.config_count   = q.getColumn(15).getInt();
+    c.sw_meta.blob_size_bytes = static_cast<int64_t>(q.getColumn(16).getInt64());
     return c;
 }
 
