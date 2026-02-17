@@ -1,8 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"C:/Users/lucan/Downloads/cadhub/build-mingw/cmake_install.cmake",
-		"C:/Users/lucan/Downloads/cadhub/build-mingw/_deps/nlohmann_json-build/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

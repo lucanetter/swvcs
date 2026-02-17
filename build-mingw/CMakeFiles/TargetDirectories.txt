@@ -1,8 +1,0 @@
-C:/Users/lucan/Downloads/cadhub/build-mingw/CMakeFiles/swvcs.dir
-C:/Users/lucan/Downloads/cadhub/build-mingw/CMakeFiles/swvcs-gui.dir
-C:/Users/lucan/Downloads/cadhub/build-mingw/CMakeFiles/edit_cache.dir
-C:/Users/lucan/Downloads/cadhub/build-mingw/CMakeFiles/rebuild_cache.dir
-C:/Users/lucan/Downloads/cadhub/build-mingw/CMakeFiles/swvcs-gui_autogen_timestamp_deps.dir
-C:/Users/lucan/Downloads/cadhub/build-mingw/CMakeFiles/swvcs-gui_autogen.dir
-C:/Users/lucan/Downloads/cadhub/build-mingw/_deps/nlohmann_json-build/CMakeFiles/edit_cache.dir
-C:/Users/lucan/Downloads/cadhub/build-mingw/_deps/nlohmann_json-build/CMakeFiles/rebuild_cache.dir

@@ -1,3 +1,0 @@
-"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\swvcs.dir/objects.a
-C:\msys64\mingw64\bin\ar.exe qc CMakeFiles\swvcs.dir/objects.a @CMakeFiles\swvcs.dir\objects1.rsp
-C:\msys64\mingw64\bin\g++.exe -O3 -DNDEBUG -Wl,--whole-archive CMakeFiles\swvcs.dir/objects.a -Wl,--no-whole-archive -o C:\Users\lucan\Downloads\cadhub\bin\swvcs.exe -Wl,--out-implib,libswvcs.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\swvcs.dir\linkLibs.rsp
