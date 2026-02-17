@@ -54,16 +54,36 @@ target_compile_definitions(swvcs PRIVATE
 )
 
 # -------------------------------------------------------
-# nlohmann/json  (header-only, fetched automatically)
+# Third-party dependencies (fetched automatically)
 # -------------------------------------------------------
 include(FetchContent)
+
+# nlohmann/json — commit metadata serialisation (header-only)
 FetchContent_Declare(
     nlohmann_json
     GIT_REPOSITORY https://github.com/nlohmann/json.git
     GIT_TAG        v3.11.3
 )
-FetchContent_MakeAvailable(nlohmann_json)
-target_link_libraries(swvcs PRIVATE nlohmann_json::nlohmann_json)
+
+# SQLiteCpp — C++ SQLite wrapper (bundles its own sqlite3, no system install needed)
+# Used for the local commit database (.swvcs/swvcs.db)
+FetchContent_Declare(
+    SQLiteCpp
+    GIT_REPOSITORY https://github.com/SRombauts/SQLiteCpp.git
+    GIT_TAG        3.3.2
+)
+set(SQLITECPP_RUN_CPPCHECK     OFF CACHE BOOL "" FORCE)
+set(SQLITECPP_RUN_CPPLINT      OFF CACHE BOOL "" FORCE)
+set(SQLITECPP_BUILD_TESTS      OFF CACHE BOOL "" FORCE)
+set(SQLITECPP_BUILD_EXAMPLES   OFF CACHE BOOL "" FORCE)
+set(SQLITECPP_INTERNAL_SQLITE  ON  CACHE BOOL "" FORCE)  # compile sqlite3 into the static lib (no DLL needed at runtime)
+
+FetchContent_MakeAvailable(nlohmann_json SQLiteCpp)
+
+target_link_libraries(swvcs PRIVATE
+    nlohmann_json::nlohmann_json
+    SQLiteCpp
+)
 
 # -------------------------------------------------------
 # Output to bin/
@@ -114,6 +134,7 @@ if (Qt6_FOUND)
         oleaut32
         uuid
         nlohmann_json::nlohmann_json
+        SQLiteCpp
     )
 
     target_compile_definitions(swvcs-gui PRIVATE

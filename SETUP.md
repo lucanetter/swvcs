@@ -53,10 +53,11 @@ cmake -S . -B build-mingw -G "MinGW Makefiles" `
   -DCMAKE_C_COMPILER="C:/msys64/mingw64/bin/gcc.exe" `
   -DCMAKE_CXX_COMPILER="C:/msys64/mingw64/bin/g++.exe" `
   -DCMAKE_MAKE_PROGRAM="C:/msys64/mingw64/bin/mingw32-make.exe" `
-  -DCMAKE_PREFIX_PATH="C:/Qt/6.10.2/mingw_64"
+  -DCMAKE_PREFIX_PATH="C:/Qt/6.10.2/mingw_64;C:/msys64/mingw64"
 ```
 
 Replace `6.10.2` with whatever Qt version you installed.
+The second path (`C:/msys64/mingw64`) lets CMake find the MSYS2 sqlite3 library used by SQLiteCpp.
 
 Expected output (last few lines):
 ```
