@@ -128,12 +128,52 @@ swvcs/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/build
 .PHONY : swvcs/fast
 
+#=============================================================================
+# Target rules for targets named swvcs-gui
+
+# Build rule for target.
+swvcs-gui: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 swvcs-gui
+.PHONY : swvcs-gui
+
+# fast build rule for target.
+swvcs-gui/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/build
+.PHONY : swvcs-gui/fast
+
+#=============================================================================
+# Target rules for targets named swvcs-gui_autogen_timestamp_deps
+
+# Build rule for target.
+swvcs-gui_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 swvcs-gui_autogen_timestamp_deps
+.PHONY : swvcs-gui_autogen_timestamp_deps
+
+# fast build rule for target.
+swvcs-gui_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui_autogen_timestamp_deps.dir\build.make CMakeFiles/swvcs-gui_autogen_timestamp_deps.dir/build
+.PHONY : swvcs-gui_autogen_timestamp_deps/fast
+
+#=============================================================================
+# Target rules for targets named swvcs-gui_autogen
+
+# Build rule for target.
+swvcs-gui_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 swvcs-gui_autogen
+.PHONY : swvcs-gui_autogen
+
+# fast build rule for target.
+swvcs-gui_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui_autogen.dir\build.make CMakeFiles/swvcs-gui_autogen.dir/build
+.PHONY : swvcs-gui_autogen/fast
+
 src/commit_engine.obj: src/commit_engine.cpp.obj
 .PHONY : src/commit_engine.obj
 
 # target to build an object file
 src/commit_engine.cpp.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/commit_engine.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/commit_engine.cpp.obj
 .PHONY : src/commit_engine.cpp.obj
 
 src/commit_engine.i: src/commit_engine.cpp.i
@@ -142,6 +182,7 @@ src/commit_engine.i: src/commit_engine.cpp.i
 # target to preprocess a source file
 src/commit_engine.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/commit_engine.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/commit_engine.cpp.i
 .PHONY : src/commit_engine.cpp.i
 
 src/commit_engine.s: src/commit_engine.cpp.s
@@ -150,7 +191,80 @@ src/commit_engine.s: src/commit_engine.cpp.s
 # target to generate assembly for a file
 src/commit_engine.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/commit_engine.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/commit_engine.cpp.s
 .PHONY : src/commit_engine.cpp.s
+
+src/gui/commit_dialog.obj: src/gui/commit_dialog.cpp.obj
+.PHONY : src/gui/commit_dialog.obj
+
+# target to build an object file
+src/gui/commit_dialog.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/gui/commit_dialog.cpp.obj
+.PHONY : src/gui/commit_dialog.cpp.obj
+
+src/gui/commit_dialog.i: src/gui/commit_dialog.cpp.i
+.PHONY : src/gui/commit_dialog.i
+
+# target to preprocess a source file
+src/gui/commit_dialog.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/gui/commit_dialog.cpp.i
+.PHONY : src/gui/commit_dialog.cpp.i
+
+src/gui/commit_dialog.s: src/gui/commit_dialog.cpp.s
+.PHONY : src/gui/commit_dialog.s
+
+# target to generate assembly for a file
+src/gui/commit_dialog.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/gui/commit_dialog.cpp.s
+.PHONY : src/gui/commit_dialog.cpp.s
+
+src/gui/main_gui.obj: src/gui/main_gui.cpp.obj
+.PHONY : src/gui/main_gui.obj
+
+# target to build an object file
+src/gui/main_gui.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/gui/main_gui.cpp.obj
+.PHONY : src/gui/main_gui.cpp.obj
+
+src/gui/main_gui.i: src/gui/main_gui.cpp.i
+.PHONY : src/gui/main_gui.i
+
+# target to preprocess a source file
+src/gui/main_gui.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/gui/main_gui.cpp.i
+.PHONY : src/gui/main_gui.cpp.i
+
+src/gui/main_gui.s: src/gui/main_gui.cpp.s
+.PHONY : src/gui/main_gui.s
+
+# target to generate assembly for a file
+src/gui/main_gui.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/gui/main_gui.cpp.s
+.PHONY : src/gui/main_gui.cpp.s
+
+src/gui/main_window.obj: src/gui/main_window.cpp.obj
+.PHONY : src/gui/main_window.obj
+
+# target to build an object file
+src/gui/main_window.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/gui/main_window.cpp.obj
+.PHONY : src/gui/main_window.cpp.obj
+
+src/gui/main_window.i: src/gui/main_window.cpp.i
+.PHONY : src/gui/main_window.i
+
+# target to preprocess a source file
+src/gui/main_window.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/gui/main_window.cpp.i
+.PHONY : src/gui/main_window.cpp.i
+
+src/gui/main_window.s: src/gui/main_window.cpp.s
+.PHONY : src/gui/main_window.s
+
+# target to generate assembly for a file
+src/gui/main_window.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/gui/main_window.cpp.s
+.PHONY : src/gui/main_window.cpp.s
 
 src/main.obj: src/main.cpp.obj
 .PHONY : src/main.obj
@@ -182,6 +296,7 @@ src/repository.obj: src/repository.cpp.obj
 # target to build an object file
 src/repository.cpp.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/repository.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/repository.cpp.obj
 .PHONY : src/repository.cpp.obj
 
 src/repository.i: src/repository.cpp.i
@@ -190,6 +305,7 @@ src/repository.i: src/repository.cpp.i
 # target to preprocess a source file
 src/repository.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/repository.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/repository.cpp.i
 .PHONY : src/repository.cpp.i
 
 src/repository.s: src/repository.cpp.s
@@ -198,6 +314,7 @@ src/repository.s: src/repository.cpp.s
 # target to generate assembly for a file
 src/repository.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/repository.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/repository.cpp.s
 .PHONY : src/repository.cpp.s
 
 src/revert_engine.obj: src/revert_engine.cpp.obj
@@ -206,6 +323,7 @@ src/revert_engine.obj: src/revert_engine.cpp.obj
 # target to build an object file
 src/revert_engine.cpp.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/revert_engine.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/revert_engine.cpp.obj
 .PHONY : src/revert_engine.cpp.obj
 
 src/revert_engine.i: src/revert_engine.cpp.i
@@ -214,6 +332,7 @@ src/revert_engine.i: src/revert_engine.cpp.i
 # target to preprocess a source file
 src/revert_engine.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/revert_engine.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/revert_engine.cpp.i
 .PHONY : src/revert_engine.cpp.i
 
 src/revert_engine.s: src/revert_engine.cpp.s
@@ -222,6 +341,7 @@ src/revert_engine.s: src/revert_engine.cpp.s
 # target to generate assembly for a file
 src/revert_engine.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/revert_engine.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/revert_engine.cpp.s
 .PHONY : src/revert_engine.cpp.s
 
 src/sw_connection.obj: src/sw_connection.cpp.obj
@@ -230,6 +350,7 @@ src/sw_connection.obj: src/sw_connection.cpp.obj
 # target to build an object file
 src/sw_connection.cpp.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/sw_connection.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/sw_connection.cpp.obj
 .PHONY : src/sw_connection.cpp.obj
 
 src/sw_connection.i: src/sw_connection.cpp.i
@@ -238,6 +359,7 @@ src/sw_connection.i: src/sw_connection.cpp.i
 # target to preprocess a source file
 src/sw_connection.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/sw_connection.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/sw_connection.cpp.i
 .PHONY : src/sw_connection.cpp.i
 
 src/sw_connection.s: src/sw_connection.cpp.s
@@ -246,6 +368,7 @@ src/sw_connection.s: src/sw_connection.cpp.s
 # target to generate assembly for a file
 src/sw_connection.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/sw_connection.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/sw_connection.cpp.s
 .PHONY : src/sw_connection.cpp.s
 
 src/utils.obj: src/utils.cpp.obj
@@ -254,6 +377,7 @@ src/utils.obj: src/utils.cpp.obj
 # target to build an object file
 src/utils.cpp.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/utils.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/utils.cpp.obj
 .PHONY : src/utils.cpp.obj
 
 src/utils.i: src/utils.cpp.i
@@ -262,6 +386,7 @@ src/utils.i: src/utils.cpp.i
 # target to preprocess a source file
 src/utils.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/utils.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/utils.cpp.i
 .PHONY : src/utils.cpp.i
 
 src/utils.s: src/utils.cpp.s
@@ -270,7 +395,32 @@ src/utils.s: src/utils.cpp.s
 # target to generate assembly for a file
 src/utils.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/src/utils.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/src/utils.cpp.s
 .PHONY : src/utils.cpp.s
+
+swvcs-gui_autogen/mocs_compilation.obj: swvcs-gui_autogen/mocs_compilation.cpp.obj
+.PHONY : swvcs-gui_autogen/mocs_compilation.obj
+
+# target to build an object file
+swvcs-gui_autogen/mocs_compilation.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/swvcs-gui_autogen/mocs_compilation.cpp.obj
+.PHONY : swvcs-gui_autogen/mocs_compilation.cpp.obj
+
+swvcs-gui_autogen/mocs_compilation.i: swvcs-gui_autogen/mocs_compilation.cpp.i
+.PHONY : swvcs-gui_autogen/mocs_compilation.i
+
+# target to preprocess a source file
+swvcs-gui_autogen/mocs_compilation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/swvcs-gui_autogen/mocs_compilation.cpp.i
+.PHONY : swvcs-gui_autogen/mocs_compilation.cpp.i
+
+swvcs-gui_autogen/mocs_compilation.s: swvcs-gui_autogen/mocs_compilation.cpp.s
+.PHONY : swvcs-gui_autogen/mocs_compilation.s
+
+# target to generate assembly for a file
+swvcs-gui_autogen/mocs_compilation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\swvcs-gui.dir\build.make CMakeFiles/swvcs-gui.dir/swvcs-gui_autogen/mocs_compilation.cpp.s
+.PHONY : swvcs-gui_autogen/mocs_compilation.cpp.s
 
 # Help Target
 help:
@@ -280,10 +430,22 @@ help:
 	@echo ... depend
 	@echo ... edit_cache
 	@echo ... rebuild_cache
+	@echo ... swvcs-gui_autogen
+	@echo ... swvcs-gui_autogen_timestamp_deps
 	@echo ... swvcs
+	@echo ... swvcs-gui
 	@echo ... src/commit_engine.obj
 	@echo ... src/commit_engine.i
 	@echo ... src/commit_engine.s
+	@echo ... src/gui/commit_dialog.obj
+	@echo ... src/gui/commit_dialog.i
+	@echo ... src/gui/commit_dialog.s
+	@echo ... src/gui/main_gui.obj
+	@echo ... src/gui/main_gui.i
+	@echo ... src/gui/main_gui.s
+	@echo ... src/gui/main_window.obj
+	@echo ... src/gui/main_window.i
+	@echo ... src/gui/main_window.s
 	@echo ... src/main.obj
 	@echo ... src/main.i
 	@echo ... src/main.s
@@ -299,6 +461,9 @@ help:
 	@echo ... src/utils.obj
 	@echo ... src/utils.i
 	@echo ... src/utils.s
+	@echo ... swvcs-gui_autogen/mocs_compilation.obj
+	@echo ... swvcs-gui_autogen/mocs_compilation.i
+	@echo ... swvcs-gui_autogen/mocs_compilation.s
 .PHONY : help
 
 

@@ -53,24 +53,32 @@ Every commit stores a **full copy** of the file (not a diff). This is intentiona
 
 - Windows 10/11 (SolidWorks is Windows-only)
 - SolidWorks installed (any version from ~2019 onwards)
-- Visual Studio 2022 with the C++ desktop workload
+- MSYS2 + MinGW-w64 (compiler toolchain)
 - CMake 3.20+
+- Qt 6.x — MinGW 64-bit kit (for the GUI only)
+
+See **[SETUP.md](SETUP.md)** for full installation and build instructions.
 
 ---
 
 ## Build
 
-```bat
-git clone <this-repo>
-cd swvcs
+```powershell
+$env:Path = "C:\msys64\mingw64\bin;$env:Path"
 
-cmake -B build -G "Visual Studio 17 2022" -A x64
-cmake --build build --config Release
+cmake -S . -B build-mingw -G "MinGW Makefiles" `
+  -DCMAKE_BUILD_TYPE=Release `
+  -DCMAKE_C_COMPILER="C:/msys64/mingw64/bin/gcc.exe" `
+  -DCMAKE_CXX_COMPILER="C:/msys64/mingw64/bin/g++.exe" `
+  -DCMAKE_MAKE_PROGRAM="C:/msys64/mingw64/bin/mingw32-make.exe" `
+  -DCMAKE_PREFIX_PATH="C:/Qt/6.x.x/mingw_64"
 
-:: Binary lands in bin\swvcs.exe
+cmake --build build-mingw -j
 ```
 
-> **Note:** If `nlohmann/json` fetch fails due to no internet on the build machine,  
+Outputs: `bin\swvcs.exe` (CLI) and `bin\swvcs-gui.exe` (GUI).
+
+> **Note:** If `nlohmann/json` fetch fails due to no internet on the build machine,
 > download the single header manually to `third_party/json.hpp` and adjust CMakeLists.txt.
 
 ---
@@ -152,8 +160,8 @@ swvcs status
 
 ## Roadmap
 
-- [ ] Assembly-aware commits (snapshot all referenced parts together)  
-- [ ] Blob compression (zstd)  
-- [ ] Simple GUI (Qt or WinUI3)  
-- [ ] Branching  
+- [ ] Assembly-aware commits (snapshot all referenced parts together)
+- [ ] Blob compression (zstd)
+- [x] Simple GUI (Qt6 + MinGW)
+- [ ] Branching
 - [ ] Watch mode (auto-commit on SW save)

@@ -22,6 +22,9 @@ CMAKE_CONFIGURATION_TYPES:STRING=Debug;Release;MinSizeRel;RelWithDebInfo
 //Value Computed by CMake.
 CMAKE_FIND_PACKAGE_REDIRECTS_DIR:STATIC=C:/Users/lucan/Downloads/cadhub/build/CMakeFiles/pkgRedirects
 
+//No help, variable specified on the command line.
+CMAKE_PREFIX_PATH:UNINITIALIZED=C:\Qt\6.10.2\msvc2022_64
+
 //Value Computed by CMake
 CMAKE_PROJECT_COMPAT_VERSION:STATIC=
 
@@ -59,7 +62,7 @@ swvcs_BINARY_DIR:STATIC=C:/Users/lucan/Downloads/cadhub/build
 swvcs_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
-swvcs_SOURCE_DIR:STATIC=C:/Users/lucan/Downloads/cadhub
+swvcs_SOURCE_DIR:STATIC=C:/Users/lucan/downloads/cadhub
 
 
 ########################

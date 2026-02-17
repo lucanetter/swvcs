@@ -1,0 +1,33 @@
+# CMake build directories (fully regeneratable — do not commit)
+build/
+build-mingw/
+build-*/
+
+# Compiled output and Qt deployment (windeployqt)
+bin/*.exe
+bin/*.dll
+bin/*.pdb
+bin/generic/
+bin/iconengines/
+bin/imageformats/
+bin/networkinformation/
+bin/platforms/
+bin/styles/
+bin/tls/
+bin/translations/
+
+# CMake cache and generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.make
+
+# IDE / editor
+.vs/
+*.user
+.vscode/settings.json
+
+# Logs
+*.log
+debug.log
