@@ -1,7 +1,7 @@
 # swvcs — SolidWorks Version Control System
 
 A lightweight, standalone CLI + GUI tool for snapshotting and reverting SolidWorks files (`.SLDPRT`, `.SLDASM`, `.SLDDRW`).
-Built in C++ using the SolidWorks COM API. No Git, no plugins — just runs alongside SolidWorks.
+Built in C++ using the SolidWorks COM API. No Git, no plugins; just runs alongside SolidWorks.
 
 ---
 
