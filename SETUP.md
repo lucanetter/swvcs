@@ -104,6 +104,49 @@ cmake --build build-mingw -j
 
 ---
 
+## Building the installer
+
+The installer packages both executables, all Qt DLLs, and adds swvcs to the user's PATH automatically. It requires no administrator rights and includes an uninstaller.
+
+### Prerequisites
+
+Download and install **Inno Setup 6** (free): https://jrsoftware.org/isinfo.php
+
+### Steps
+
+**1. Build the project** (if not already done):
+```powershell
+$env:Path = "C:\msys64\mingw64\bin;$env:Path"
+cmake --build build-mingw -j
+```
+
+**2. Deploy Qt DLLs** (if not already done):
+```powershell
+cd C:\Users\lucan\Downloads\cadhub\bin
+C:\Qt\6.10.2\mingw_64\bin\windeployqt.exe swvcs-gui.exe
+```
+
+**3. Compile the installer:**
+
+Open `installer.iss` in Inno Setup Compiler and press **F9** (Build > Compile).
+
+Or from the command line:
+```powershell
+& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+```
+
+Output: `installer\swvcs-setup.exe`
+
+### What the installer does
+
+- Installs to `%LocalAppData%\swvcs\` (no admin rights needed)
+- Copies `swvcs.exe`, `swvcs-gui.exe`, and all Qt DLLs
+- Adds the install directory to the user's PATH so `swvcs` works in any terminal
+- Creates a **Start Menu** shortcut for the GUI
+- Registers a proper **uninstaller** that also cleans up PATH
+
+---
+
 ## Using the GUI (swvcs-gui.exe)
 
 ### Launching
@@ -180,8 +223,8 @@ swvcs.exe revert a1b2c3d4
 
 Each commit creates:
 - `.swvcs/blobs/{hash}.bin` — full copy of the `.SLDPRT` or `.SLDASM`
-- `.swvcs/commits/{hash}.json` — metadata (message, timestamp, author, mass, volume, feature count)
 - `.swvcs/thumbs/{hash}.bmp` — 256×256 preview screenshot
+- A row in `.swvcs/swvcs.db` — all metadata (message, timestamp, author, mass, volume, surface area, material, bounding box, feature count, file size, etc.)
 
 Identical files share the same blob (deduplication via SHA-256), so repeated commits of an unchanged file use no extra disk space.
 
@@ -193,11 +236,9 @@ Identical files share the same blob (deduplication via SHA-256), so repeated com
 your-project/
 ├── bracket.SLDPRT
 └── .swvcs/
-    ├── HEAD              ← current commit hash
-    ├── config.json
-    ├── commits/          ← one JSON file per commit
+    ├── swvcs.db          ← SQLite database (all commit metadata + HEAD)
     ├── blobs/            ← full file snapshots (.bin)
-    └── thumbs/           ← preview images (.bmp)
+    └── thumbs/           ← 256×256 preview images (.bmp)
 ```
 
 ---
