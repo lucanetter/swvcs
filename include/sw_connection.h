@@ -14,7 +14,7 @@
 #include "types.h"
 
 #include <Windows.h>
-#include <atlbase.h>   // CComPtr, CComBSTR
+#include <oaidl.h>     // IDispatch, VARIANT
 
 // Import SolidWorks type library.
 // Adjust the path to match the installed SW version on the build machine.

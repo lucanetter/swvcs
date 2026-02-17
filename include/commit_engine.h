@@ -12,8 +12,12 @@
 // -------------------------------------------------------
 
 #include "types.h"
-#include "repository.h"
-#include "sw_connection.h"
+
+#include <filesystem>
+#include <string>
+
+class Repository;
+class SwConnection;
 
 class CommitEngine {
 public:

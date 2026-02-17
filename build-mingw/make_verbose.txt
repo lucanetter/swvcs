@@ -1,0 +1,17 @@
+"C:\Program Files\CMake\bin\cmake.exe" -SC:\Users\lucan\Downloads\cadhub -BC:\Users\lucan\Downloads\cadhub\build-mingw --check-build-system CMakeFiles\Makefile.cmake 0
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_progress_start C:\Users\lucan\Downloads\cadhub\build-mingw\CMakeFiles C:\Users\lucan\Downloads\cadhub\build-mingw\\CMakeFiles\progress.marks
+C:/msys64/mingw64/bin/mingw32-make.exe  -f CMakeFiles\Makefile2 all
+mingw32-make[1]: Entering directory 'C:/Users/lucan/Downloads/cadhub/build-mingw'
+C:/msys64/mingw64/bin/mingw32-make.exe  -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/depend
+mingw32-make[2]: Entering directory 'C:/Users/lucan/Downloads/cadhub/build-mingw'
+"C:\Program Files\CMake\bin\cmake.exe" -E cmake_depends "MinGW Makefiles" C:\Users\lucan\Downloads\cadhub C:\Users\lucan\Downloads\cadhub C:\Users\lucan\Downloads\cadhub\build-mingw C:\Users\lucan\Downloads\cadhub\build-mingw C:\Users\lucan\Downloads\cadhub\build-mingw\CMakeFiles\swvcs.dir\DependInfo.cmake "--color=" swvcs
+mingw32-make[2]: Leaving directory 'C:/Users/lucan/Downloads/cadhub/build-mingw'
+C:/msys64/mingw64/bin/mingw32-make.exe  -f CMakeFiles\swvcs.dir\build.make CMakeFiles/swvcs.dir/build
+mingw32-make[2]: Entering directory 'C:/Users/lucan/Downloads/cadhub/build-mingw'
+[ 14%] Building CXX object CMakeFiles/swvcs.dir/src/main.cpp.obj
+C:\msys64\mingw64\bin\g++.exe -DNOMINMAX -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE @CMakeFiles/swvcs.dir/includes_CXX.rsp -O3 -DNDEBUG -std=gnu++20 -MD -MT CMakeFiles/swvcs.dir/src/main.cpp.obj -MF CMakeFiles\swvcs.dir\src\main.cpp.obj.d -o CMakeFiles\swvcs.dir\src\main.cpp.obj -c C:\Users\lucan\Downloads\cadhub\src\main.cpp
+mingw32-make[2]: *** [CMakeFiles\swvcs.dir\build.make:79: CMakeFiles/swvcs.dir/src/main.cpp.obj] Error 1
+mingw32-make[2]: Leaving directory 'C:/Users/lucan/Downloads/cadhub/build-mingw'
+mingw32-make[1]: *** [CMakeFiles\Makefile2:108: CMakeFiles/swvcs.dir/all] Error 2
+mingw32-make[1]: Leaving directory 'C:/Users/lucan/Downloads/cadhub/build-mingw'
+mingw32-make: *** [Makefile:90: all] Error 2

@@ -1,0 +1,5 @@
+C:/Users/lucan/Downloads/cadhub/build-mingw/CMakeFiles/swvcs.dir
+C:/Users/lucan/Downloads/cadhub/build-mingw/CMakeFiles/edit_cache.dir
+C:/Users/lucan/Downloads/cadhub/build-mingw/CMakeFiles/rebuild_cache.dir
+C:/Users/lucan/Downloads/cadhub/build-mingw/_deps/nlohmann_json-build/CMakeFiles/edit_cache.dir
+C:/Users/lucan/Downloads/cadhub/build-mingw/_deps/nlohmann_json-build/CMakeFiles/rebuild_cache.dir

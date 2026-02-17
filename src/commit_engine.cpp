@@ -1,4 +1,6 @@
 #include "commit_engine.h"
+#include "repository.h"
+#include "sw_connection.h"
 
 #include <Windows.h>
 #include <wincrypt.h>   // CryptAcquireContext, SHA-256
@@ -66,7 +68,7 @@ Result CommitEngine::Commit(const std::string& message, bool capture_thumbnail) 
     }
 
     // 6. Gather SW metadata
-    Commit c;
+    ::Commit c;
     c.hash        = hash;
     c.message     = message;
     c.timestamp   = NowISO8601();

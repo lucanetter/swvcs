@@ -1,0 +1,10 @@
+testing connection:
+1. navigate to folder with solidworks file/s you are currently using
+2. initalize (once per folder): C:\Users\lucan\Downloads\cadhub\bin\swvcs.exe init
+3. verify app connection and active doc: C:\Users\lucan\Downloads\cadhub\bin\swvcs.exe status
+
+commiting:
+4. commit active solidworks file: C:\Users\lucan\Downloads\cadhub\bin\swvcs.exe commit "baseline"
+5. make change to part and commit again: C:\Users\lucan\Downloads\cadhub\bin\swvcs.exe commit "changed fillet on bracket arm"
+6. view history: C:\Users\lucan\Downloads\cadhub\bin\swvcs.exe log
+7. revert test: C:\Users\lucan\Downloads\cadhub\bin\swvcs.exe revert <hash_prefix>

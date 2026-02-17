@@ -1,0 +1,4 @@
+[ 14%] Building CXX object CMakeFiles/swvcs.dir/src/main.cpp.obj
+mingw32-make[2]: *** [CMakeFiles\swvcs.dir\build.make:79: CMakeFiles/swvcs.dir/src/main.cpp.obj] Error 1
+mingw32-make[1]: *** [CMakeFiles\Makefile2:108: CMakeFiles/swvcs.dir/all] Error 2
+mingw32-make: *** [Makefile:90: all] Error 2

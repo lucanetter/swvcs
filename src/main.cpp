@@ -45,7 +45,7 @@ Notes:
 // -------------------------------------------------------
 
 static int CmdInit(const std::vector<std::string>& args) {
-    fs::path dir = args.size() > 1 ? fs::path(args[1]) : fs::current_path();
+    fs::path dir = args.empty() ? fs::current_path() : fs::path(args[0]);
     Repository repo(dir);
     if (!repo.IsValid()) {
         std::cerr << "Failed to initialise repository at: " << dir.string() << "\n";
@@ -87,7 +87,7 @@ static int CmdStatus(const std::vector<std::string>& args, Repository& repo, SwC
 
 static int CmdCommit(const std::vector<std::string>& args,
                      Repository& repo, SwConnection& sw) {
-    if (args.size() < 2) {
+    if (args.empty()) {
         std::cerr << "Usage: swvcs commit <message>\n";
         return 1;
     }
@@ -99,8 +99,8 @@ static int CmdCommit(const std::vector<std::string>& args,
 
     // Join all remaining args as the message (handles spaces without quotes)
     std::string message;
-    for (size_t i = 1; i < args.size(); ++i) {
-        if (i > 1) message += " ";
+    for (size_t i = 0; i < args.size(); ++i) {
+        if (i > 0) message += " ";
         message += args[i];
     }
 
@@ -114,7 +114,7 @@ static int CmdCommit(const std::vector<std::string>& args,
 }
 
 static int CmdLog(const std::vector<std::string>& args, Repository& repo) {
-    bool full = args.size() > 1 && args[1] == "--full";
+    bool full = !args.empty() && args[0] == "--full";
     auto commits = repo.ListCommits();
 
     if (commits.empty()) {
@@ -133,14 +133,14 @@ static int CmdLog(const std::vector<std::string>& args, Repository& repo) {
 
 static int CmdRevert(const std::vector<std::string>& args,
                      Repository& repo, SwConnection& sw) {
-    if (args.size() < 2) {
+    if (args.empty()) {
         std::cerr << "Usage: swvcs revert <hash>\n";
         return 1;
     }
 
     // Confirm with user
     std::cout << "This will overwrite your working file with commit "
-              << args[1] << ".\nContinue? [y/N] ";
+              << args[0] << ".\nContinue? [y/N] ";
     std::string ans;
     std::getline(std::cin, ans);
     if (ans.empty() || (ans[0] != 'y' && ans[0] != 'Y')) {
@@ -149,7 +149,7 @@ static int CmdRevert(const std::vector<std::string>& args,
     }
 
     RevertEngine engine(repo, sw);
-    Result r = engine.Revert(args[1]);
+    Result r = engine.Revert(args[0]);
     if (!r.ok) {
         std::cerr << "Revert failed: " << r.err << "\n";
         return 1;
