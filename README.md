@@ -50,7 +50,7 @@ All commit metadata is stored in a **SQLite database** (`.swvcs/swvcs.db`). Bina
     └── a1b2c3d4....bmp   # 256x256 screenshot of the model
 ```
 
-Every commit stores a **full copy** of the file (not a diff). This is intentional — SolidWorks binary files aren't diffable, and storage is cheap. Identical files produce the same hash, so unchanged files don't get re-stored.
+Every commit stores a **full copy** of the file (not a diff). This is intentional, as SolidWorks binary files aren't diffable, and storage is cheap. Identical files produce the same hash, so unchanged files don't get re-stored.
 
 ### Metadata captured per commit
 
@@ -163,13 +163,3 @@ swvcs status
 - **Thumbnail** — relies on `SaveBMP`, which requires the model to be in a rendered 3D viewport. May be blank on 2D drawing sheets or complex assemblies.
 - **Material** — only populated for part documents; empty for assemblies and drawings.
 
----
-
-## Roadmap
-
-- [ ] Assembly-aware commits (snapshot all referenced parts together)
-- [ ] Blob compression (zstd)
-- [x] Simple GUI (Qt6 + MinGW)
-- [x] SQLite metadata database
-- [ ] Branching
-- [ ] Watch mode (auto-commit on SW save)
