@@ -39,8 +39,35 @@ MainWindow::MainWindow(QWidget* parent)
     connect(pollTimer_, &QTimer::timeout, this, &MainWindow::pollSolidWorks);
     pollTimer_->start(3000);
 
-    // Initial check
+    // Initial SW check
     pollSolidWorks();
+
+    // Show the open/new prompt after the window is fully visible
+    QTimer::singleShot(0, this, &MainWindow::promptOnStartup);
+}
+
+// -------------------------------------------------------
+// Startup prompt
+// -------------------------------------------------------
+
+void MainWindow::promptOnStartup()
+{
+    QMessageBox box(this);
+    box.setWindowTitle("swvcs — Welcome");
+    box.setText("<b>Welcome to swvcs</b><br>SolidWorks Version Control");
+    box.setInformativeText("Open an existing project folder, or initialize "
+                           "version control in a new folder.");
+
+    QPushButton* openBtn = box.addButton("Open Existing Project",
+                                         QMessageBox::AcceptRole);
+    QPushButton* newBtn  = box.addButton("New Project",
+                                         QMessageBox::ActionRole);
+    box.addButton("Later", QMessageBox::RejectRole);
+    box.setDefaultButton(openBtn);
+    box.exec();
+
+    if      (box.clickedButton() == openBtn) onOpenRepo();
+    else if (box.clickedButton() == newBtn)  onNewRepo();
 }
 
 // -------------------------------------------------------
@@ -62,8 +89,12 @@ void MainWindow::setupUi()
     // ---- Toolbar row ----
     auto* toolbarRow = new QHBoxLayout();
 
+    auto* newBtn = new QPushButton("New Repo", this);
+    newBtn->setToolTip("Initialize version control in a new project folder");
+    connect(newBtn, &QPushButton::clicked, this, &MainWindow::onNewRepo);
+
     auto* openBtn = new QPushButton("Open Repo", this);
-    openBtn->setToolTip("Open a project folder that contains a .swvcs repository");
+    openBtn->setToolTip("Open a project folder that already has a .swvcs repository");
     connect(openBtn, &QPushButton::clicked, this, &MainWindow::onOpenRepo);
 
     repoPathLabel_ = new QLabel("No repository open", this);
@@ -78,6 +109,7 @@ void MainWindow::setupUi()
     commitBtn_->setEnabled(false);
     connect(commitBtn_, &QPushButton::clicked, this, &MainWindow::onCommit);
 
+    toolbarRow->addWidget(newBtn);
     toolbarRow->addWidget(openBtn);
     toolbarRow->addSpacing(8);
     toolbarRow->addWidget(repoPathLabel_, 1);
@@ -129,31 +161,51 @@ void MainWindow::setupUi()
     thumbLabel_->setText("No commit selected");
     detailLayout->addWidget(thumbLabel_, 0, Qt::AlignHCenter);
 
-    // Metadata form
+    // Metadata form — Commit Info
     auto* formGroup = new QGroupBox("Commit Info", detailWidget);
     auto* form      = new QFormLayout(formGroup);
     form->setSpacing(6);
     form->setLabelAlignment(Qt::AlignRight);
 
-    hashLabel_   = new QLabel(this); hashLabel_->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    authorLabel_ = new QLabel(this);
-    dateLabel_   = new QLabel(this);
-    fileLabel_   = new QLabel(this); fileLabel_->setWordWrap(true);
-    typeLabel_   = new QLabel(this);
-    massLabel_   = new QLabel(this);
-    volumeLabel_ = new QLabel(this);
-    featLabel_   = new QLabel(this);
+    hashLabel_        = new QLabel(this); hashLabel_->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    authorLabel_      = new QLabel(this);
+    dateLabel_        = new QLabel(this);
+    fileLabel_        = new QLabel(this); fileLabel_->setWordWrap(true);
+    typeLabel_        = new QLabel(this);
+    materialLabel_    = new QLabel(this);
+    configCountLabel_ = new QLabel(this);
+    blobSizeLabel_    = new QLabel(this);
 
-    form->addRow("Hash:",     hashLabel_);
-    form->addRow("Author:",   authorLabel_);
-    form->addRow("Date:",     dateLabel_);
-    form->addRow("File:",     fileLabel_);
-    form->addRow("Type:",     typeLabel_);
-    form->addRow("Mass:",     massLabel_);
-    form->addRow("Volume:",   volumeLabel_);
-    form->addRow("Features:", featLabel_);
+    form->addRow("Hash:",         hashLabel_);
+    form->addRow("Author:",       authorLabel_);
+    form->addRow("Date:",         dateLabel_);
+    form->addRow("File:",         fileLabel_);
+    form->addRow("Type:",         typeLabel_);
+    form->addRow("Material:",     materialLabel_);
+    form->addRow("Configs:",      configCountLabel_);
+    form->addRow("Snapshot size:", blobSizeLabel_);
 
     detailLayout->addWidget(formGroup);
+
+    // Physical properties group
+    auto* physGroup  = new QGroupBox("Physical Properties", detailWidget);
+    auto* physForm   = new QFormLayout(physGroup);
+    physForm->setSpacing(6);
+    physForm->setLabelAlignment(Qt::AlignRight);
+
+    massLabel_        = new QLabel(this);
+    volumeLabel_      = new QLabel(this);
+    surfaceAreaLabel_ = new QLabel(this);
+    bboxLabel_        = new QLabel(this);
+    featLabel_        = new QLabel(this);
+
+    physForm->addRow("Mass:",         massLabel_);
+    physForm->addRow("Volume:",       volumeLabel_);
+    physForm->addRow("Surface area:", surfaceAreaLabel_);
+    physForm->addRow("Bounding box:", bboxLabel_);
+    physForm->addRow("Features:",     featLabel_);
+
+    detailLayout->addWidget(physGroup);
 
     // Commit message
     auto* msgGroup  = new QGroupBox("Message", detailWidget);
@@ -185,7 +237,23 @@ void MainWindow::setupUi()
 }
 
 // -------------------------------------------------------
-// Open repo
+// New repo
+// -------------------------------------------------------
+
+void MainWindow::onNewRepo()
+{
+    QString dir = QFileDialog::getExistingDirectory(
+        this,
+        "Choose Folder for New Repository",
+        QString(),
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+    if (!dir.isEmpty())
+        loadRepo(dir, /*isNew=*/true);
+}
+
+// -------------------------------------------------------
+// Open existing repo
 // -------------------------------------------------------
 
 void MainWindow::onOpenRepo()
@@ -197,18 +265,33 @@ void MainWindow::onOpenRepo()
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (!dir.isEmpty())
-        loadRepo(dir);
+        loadRepo(dir, /*isNew=*/false);
 }
 
-void MainWindow::loadRepo(const QString& dirPath)
+void MainWindow::loadRepo(const QString& dirPath, bool isNew)
 {
+    // Check whether a repo already exists here before we open it
+    fs::path dbPath = fs::path(dirPath.toStdWString()) / ".swvcs" / "swvcs.db";
+    bool existed = fs::exists(dbPath);
+
+    // If the user clicked "Open Existing" but there's no repo here, warn them
+    if (!isNew && !existed) {
+        auto ans = QMessageBox::question(this, "No repository found",
+            QString("No swvcs repository found in:\n%1\n\n"
+                    "Would you like to initialize one here?").arg(dirPath),
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+        if (ans != QMessageBox::Yes) return;
+        isNew = true;
+    }
+
     auto newRepo = std::make_unique<Repository>(
         fs::path(dirPath.toStdWString()));
 
     if (!newRepo->IsValid()) {
-        QMessageBox::warning(this, "swvcs",
-            QString("No .swvcs repository found in:\n%1\n\n"
-                    "Run  swvcs.exe init  in that folder first.").arg(dirPath));
+        QMessageBox::critical(this, "swvcs",
+            QString("Failed to open repository at:\n%1\n\n"
+                    "Check that the folder is accessible and not read-only.")
+            .arg(dirPath));
         return;
     }
 
@@ -219,6 +302,12 @@ void MainWindow::loadRepo(const QString& dirPath)
     refreshCommitList();
     clearDetail();
     updateSwStatus();
+
+    if (isNew && !existed)
+        statusBar()->showMessage(
+            "Initialized new repository at: " + dirPath, 5000);
+    else
+        statusBar()->showMessage("Opened repository: " + dirPath, 3000);
 }
 
 // -------------------------------------------------------
@@ -236,7 +325,6 @@ void MainWindow::refreshCommitList()
     for (const auto& c : commits) {
         bool isHead = (c.hash == head);
 
-        // Short hash (8 chars), message, timestamp, author
         QString shortHash = QString::fromStdString(c.hash.substr(0, 8));
         QString msg       = QString::fromStdString(c.message);
         QString author    = QString::fromStdString(c.author);
@@ -273,7 +361,6 @@ void MainWindow::refreshCommitList()
         }
     }
 
-    // Update HEAD label in status bar
     if (!head.empty())
         sbHeadLabel_->setText("HEAD: " +
             QString::fromStdString(head.substr(0, 8)));
@@ -322,20 +409,52 @@ void MainWindow::showCommitDetail(const Commit& c)
         thumbLabel_->setText("No thumbnail");
     }
 
-    // Metadata
+    // ---- Commit Info ----
     hashLabel_  ->setText(QString::fromStdString(c.hash));
     authorLabel_->setText(QString::fromStdString(c.author));
     dateLabel_  ->setText(QString::fromStdString(c.timestamp));
     fileLabel_  ->setText(QString::fromStdString(c.sw_meta.doc_path));
     typeLabel_  ->setText(QString::fromStdString(c.sw_meta.doc_type));
 
+    materialLabel_->setText(c.sw_meta.material.empty()
+        ? "--"
+        : QString::fromStdString(c.sw_meta.material));
+
+    configCountLabel_->setText(c.sw_meta.config_count > 0
+        ? QString::number(c.sw_meta.config_count)
+        : "--");
+
+    if (c.sw_meta.blob_size_bytes > 0) {
+        double kb = c.sw_meta.blob_size_bytes / 1024.0;
+        double mb = kb / 1024.0;
+        blobSizeLabel_->setText(mb >= 1.0
+            ? QString::number(mb, 'f', 1) + " MB"
+            : QString::number(kb, 'f', 1) + " KB");
+    } else {
+        blobSizeLabel_->setText("--");
+    }
+
+    // ---- Physical Properties ----
     massLabel_->setText(c.sw_meta.mass > 0.0
-        ? QString::number(c.sw_meta.mass,   'f', 4) + " kg"
+        ? QString::number(c.sw_meta.mass, 'f', 4) + " kg"
         : "--");
 
     volumeLabel_->setText(c.sw_meta.volume > 0.0
         ? QString::number(c.sw_meta.volume, 'f', 6) + " m\u00B3"
         : "--");
+
+    surfaceAreaLabel_->setText(c.sw_meta.surface_area > 0.0
+        ? QString::number(c.sw_meta.surface_area, 'f', 4) + " m\u00B2"
+        : "--");
+
+    if (c.sw_meta.bbox_x > 0.0 || c.sw_meta.bbox_y > 0.0 || c.sw_meta.bbox_z > 0.0) {
+        bboxLabel_->setText(
+            QString::number(c.sw_meta.bbox_x, 'f', 1) + " \u00D7 " +
+            QString::number(c.sw_meta.bbox_y, 'f', 1) + " \u00D7 " +
+            QString::number(c.sw_meta.bbox_z, 'f', 1) + " mm");
+    } else {
+        bboxLabel_->setText("--");
+    }
 
     featLabel_->setText(c.sw_meta.feature_count > 0
         ? QString::number(c.sw_meta.feature_count)
@@ -343,9 +462,9 @@ void MainWindow::showCommitDetail(const Commit& c)
 
     messageLabel_->setText(QString::fromStdString(c.message));
 
-    // Revert is only useful for non-HEAD commits and when SW is running
-    std::string head    = repo_->GetHead();
-    bool        isHead  = (c.hash == head);
+    // Revert button state
+    std::string head   = repo_->GetHead();
+    bool        isHead = (c.hash == head);
     bool        swReady = sw_.IsConnected();
 
     revertBtn_->setEnabled(!isHead && swReady);
@@ -360,15 +479,20 @@ void MainWindow::clearDetail()
     selectedHash_.clear();
     thumbLabel_->clear();
     thumbLabel_->setText("No commit selected");
-    hashLabel_  ->clear();
-    authorLabel_->clear();
-    dateLabel_  ->clear();
-    fileLabel_  ->clear();
-    typeLabel_  ->clear();
-    massLabel_  ->clear();
-    volumeLabel_->clear();
-    featLabel_  ->clear();
-    messageLabel_->clear();
+    hashLabel_       ->clear();
+    authorLabel_     ->clear();
+    dateLabel_       ->clear();
+    fileLabel_       ->clear();
+    typeLabel_       ->clear();
+    materialLabel_   ->clear();
+    configCountLabel_->clear();
+    blobSizeLabel_   ->clear();
+    massLabel_       ->clear();
+    volumeLabel_     ->clear();
+    surfaceAreaLabel_->clear();
+    bboxLabel_       ->clear();
+    featLabel_       ->clear();
+    messageLabel_    ->clear();
     revertBtn_->setEnabled(false);
 }
 
@@ -409,7 +533,6 @@ void MainWindow::onCommit()
 
     refreshCommitList();
 
-    // Select the new HEAD (it will be first in the list)
     if (commitList_->count() > 0)
         commitList_->setCurrentRow(0);
 }
@@ -460,7 +583,6 @@ void MainWindow::onRevert()
 
 void MainWindow::pollSolidWorks()
 {
-    // If not yet connected, try to attach (non-blocking — just attempt once)
     if (!sw_.IsConnected())
         sw_.Connect();
 
@@ -491,11 +613,9 @@ void MainWindow::updateSwStatus()
         sbSwLabel_->setText("SolidWorks: connected — no active document");
     }
 
-    // Enable commit button when both a repo and SW connection exist
     if (repo_)
         commitBtn_->setEnabled(true);
 
-    // Refresh revert button state for the currently selected commit
     if (!selectedHash_.empty() && repo_) {
         std::string head   = repo_->GetHead();
         bool        isHead = (selectedHash_ == head);
